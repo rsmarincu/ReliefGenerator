@@ -7,23 +7,34 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <link rel="stylesheet" href={{url_for( 'static',filename='./style/style.css' )}}>
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:700,800&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  {% block body %}{% endblock %}
 
-  <form id='location'>
-    <input type="text" id='textBox'>
-  </form>
+  <div class='wrapper'>
+      <form id='location' autocomplete='off' spellcheck="false">
+        <input type="text" id='textBox'>
+        <div id='distance-buttons'> 
+            <input type="radio" name='distance' id='25' value="">
+            <label for="25">25</label>
+            <input type="radio" name ='distance' value="">
+            <label for="50">50</label>
+            <input type="radio" name='distance' value="">
+            <label for="100">100</label>
+        </div>
+      </form>
+        
+
+  </div>
 
   <div id='canvasContainer'>
     <canvas id='mainCanvas'></canvas>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/106/three.min.js" integrity="sha256-tAVw6WRAXc3td2Esrjd28l54s3P2y7CDFu1271mu5LE=" crossorigin="anonymous"></script>
-  <script src={{ url_for ( 'static', filename='FileSaver.js' ) }}></script>
   <script src={{ url_for ( 'static', filename='OrbitControls.js' ) }}></script>
-  <script src={{ url_for ( 'static', filename='OBJExporter.js' ) }}></script>
   <script src={{ url_for ( 'static', filename='script.js' ) }}></script>
 
 </body>

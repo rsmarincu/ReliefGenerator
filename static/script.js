@@ -31,7 +31,7 @@ var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 
 scene.add(light);
-
+camera.position.set(500, 500, 500);
 
 document.getElementById('location').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -89,10 +89,15 @@ document.getElementById('location').addEventListener('submit', function(e) {
 
       mesh = new THREE.Mesh(geometry, material);
       mesh.material.side = THREE.DoubleSide;
+
+      console.log(json.distance,json.size);
+      let move = json.distance * json.size;
+      mesh.position.x = -move / 2;
+      mesh.position.z = -move / 2;
+      camera.position.set(move,json.highest,move);
       scene.add(mesh);
+
       camera.lookAt(mesh);
-
-
     });
 });
 
@@ -108,8 +113,11 @@ function createSphere(lat, long, elev) {
   console.log('sphere added');
 };
 
+
+
 scene.add(gridHelper);
-camera.position.set(500, 500, 500);
+
+
 var animate = function() {
   requestAnimationFrame(animate);
   controls.update();

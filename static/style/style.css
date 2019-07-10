@@ -1,9 +1,18 @@
 html, body {
   margin: 0;
   height:100%;
-  background: #ecf0f1;
+  background: #2C3E50;  /* fallback for old browsers */
+  
+  background: linear-gradient(to top, #ddd6f3, #faaca8  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  
+  
  }
-
+.wrapper{
+  position: absolute;
+  z-index: 8;
+  height:100%;
+  width:100%;
+}
 #canvasContainer{
   height: 100%;
   width: 100%;
@@ -14,27 +23,51 @@ html, body {
 }
 
 #mainCanvas{
-  height: 50%;
-  width: 50%;
+  height: 100%;
+  width: 100%;
 }
 #location{
   z-index: 8;
   padding: 2em;
   position:absolute;
-  width: 100%;
+  left:10%;
+  width: 80%;
 }
-input{
+#textBox{
   z-index: 8;
+  text-align: center;
   width: 100%;
-  height: 3em;
+  font-size: 60px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  color: white;
+  height: 1.5em;
   background-color: transparent;
   border: none;
-  border-bottom: 3px solid green;
+  border-bottom: 10px solid rgba(255,255,255,0.1);
 }
-input:focus {
+#textBox:focus {
   background-color: transparent;
   outline: none !important;
   outline-style: none !important;
   box-shadow: none !important;
-  border-bottom: 3px solid green;
+  border-bottom: 10px solid rgba(255,255,255,0.2);
+}
+
+#size-buttons{
+  width: 100%;
+  padding-top:2em;
+}
+
+label{
+font-family: 'Open Sans', sans-serif, monospace;
+font-size:2em;
+font-weight: 400;
+color: white;
+}
+
+input[type=radio]{
+  height:2em;
+  width:2em;
+  opacity: 0.2;
 }

@@ -26,7 +26,6 @@ def main():
 @app.route('/hello',methods=['GET','POST'])
 def hello():
     if request.method == 'POST':
-        print('Incoming..')
         print(request.get_json())
         json = request.get_json()
         location = json['location']
@@ -37,10 +36,7 @@ def hello():
         sendData = createData(size, latitude,longitude, distance)
         return jsonify(sendData)
     else:
-        return 'nothign'
-
-
-
+        return 'nothing'
 
 # //variables..................................................
 
@@ -152,9 +148,12 @@ def createData(size,latitude,longitude,distance):
     elevations = getElevations(coordinates)
     lleList = []
     minElevation = 650000
+    maxElevation = -650000
     for i,elev in enumerate (elevations):
         if elev <  minElevation:
             minElevation = elev
+        if elev > maxElevation:
+            maxElevation = elev
         dict = {'lat':grid[i][0],
                 'long':grid[i][1],
                 'elev':elev}
@@ -162,6 +161,8 @@ def createData(size,latitude,longitude,distance):
 
     lleJson = {'coordinate':lleList,
                 'lowest':minElevation,
-                'size': size
+                'size': size,
+                'distance':distance,
+                'highest': maxElevation
                 }
     return lleJson
