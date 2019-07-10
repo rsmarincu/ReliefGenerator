@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href={{url_for( 'static',filename='./style/style.css' )}}>
+</head>
+
+<body>
+  {% block body %}{% endblock %}
+
+  <form id='location'>
+    <input type="text" id='textBox'>
+  </form>
+
+  <div id='canvasContainer'>
+    <canvas id='mainCanvas'></canvas>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/106/three.min.js" integrity="sha256-tAVw6WRAXc3td2Esrjd28l54s3P2y7CDFu1271mu5LE=" crossorigin="anonymous"></script>
+  <script src={{ url_for ( 'static', filename='FileSaver.js' ) }}></script>
+  <script src={{ url_for ( 'static', filename='OrbitControls.js' ) }}></script>
+  <script src={{ url_for ( 'static', filename='OBJExporter.js' ) }}></script>
+  <script src={{ url_for ( 'static', filename='script.js' ) }}></script>
+
+</body>
+
+</html>
