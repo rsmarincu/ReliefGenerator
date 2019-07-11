@@ -1,19 +1,9 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100000);
+var exporter = new THREE.OBJExporter();
 
-
-canvas = document.getElementById('mainCanvas')
-context = canvas.getContext('webgl')
-
-var light = new THREE.DirectionalLight(0xffffff, 1.1);
-light.castShadow = true;
-light.position.set(0.5, 1000, 0.1);
-
-
-var size = 100;
-var divisions = 10;
-var gridHelper = new THREE.GridHelper(size, divisions);
-gridHelper.colorGrid = '#000000';
+canvas = document.getElementById('mainCanvas');
+context = canvas.getContext('webgl');
 
 
 var renderer = new THREE.WebGLRenderer({
@@ -23,19 +13,32 @@ var renderer = new THREE.WebGLRenderer({
 });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-
 renderer.gammaOutput = true;
 renderer.gammaFactor = 2;
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
+var light = new THREE.DirectionalLight(0xffffff, 1.1);
 
+light.castShadow = true;
+light.position.set(0.5, 1000, 0.1);
+
+
+var gridHelper = new THREE.GridHelper(100, 10);
+gridHelper.colorGrid = '#000000';
+
+
+scene.add(gridHelper);
 scene.add(light);
 camera.position.set(500, 500, 500);
 
 document.getElementById('location').addEventListener('submit', function(e) {
   e.preventDefault();
   let location = document.getElementById('textBox').value;
+  let gridSize = document.querySelector('input[name="size"]:checked').value;
+  let gridDistance = document.querySelector('input[name="distance"]:checked').value;
+
+
   fetch('/hello', {
       method: 'POST',
       headers: {
@@ -43,7 +46,9 @@ document.getElementById('location').addEventListener('submit', function(e) {
         'Content-type': 'application/json'
       },
       body: JSON.stringify({
-        location: location
+        location: location,
+        size: gridSize,
+        distance: gridDistance
       })
     })
     .then((res) => res.json())
@@ -52,7 +57,7 @@ document.getElementById('location').addEventListener('submit', function(e) {
         if (scene.children[i].type === "Mesh")
           scene.remove(scene.children[i]);
       }
-      console.log(json.coordinate);
+
       var vertices = [];
       var holes = [];
       json.coordinate.forEach(function(coord) {
@@ -90,18 +95,17 @@ document.getElementById('location').addEventListener('submit', function(e) {
       mesh = new THREE.Mesh(geometry, material);
       mesh.material.side = THREE.DoubleSide;
 
-      console.log(json.distance,json.size);
       let move = json.distance * json.size;
       mesh.position.x = -move / 2;
       mesh.position.z = -move / 2;
       camera.position.set(move,json.highest,move);
+      mesh.name = 'relief';
       scene.add(mesh);
 
       camera.lookAt(mesh);
+      controls.autoRotate = true;
     });
 });
-
-
 
 function createSphere(lat, long, elev) {
   var geo = new THREE.SphereGeometry(10, 8, 8);
@@ -113,10 +117,15 @@ function createSphere(lat, long, elev) {
   console.log('sphere added');
 };
 
+var downloadButton = document.getElementById('download-button');
 
-
-scene.add(gridHelper);
-
+downloadButton.addEventListener('click', function(){
+  var mesh = scene.getObjectByName('relief');
+  var objData = exporter.parse(mesh);
+  console.log(objData);
+  var blob = new Blob([objData], {type: "text/plain"});
+  saveAs(blob,'relief.obj');
+});
 
 var animate = function() {
   requestAnimationFrame(animate);

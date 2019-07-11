@@ -17,6 +17,18 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 geolocator = Nominatim(user_agent='rsmarincu')
 
+# //variables..................................................
+
+earthR=6371000
+west=math.radians(270)
+north=math.radians(0)
+
+latitude = 45.832119
+longitude = 6.865575
+size = 100
+distance = 50
+increase = 350
+
 # //Routes...................................
 
 @app.route('/')
@@ -29,8 +41,9 @@ def hello():
         print(request.get_json())
         json = request.get_json()
         location = json['location']
+        size = int(json['size'])
+        distance = int(json['distance'])
         coordinates = geolocator.geocode(location,timeout=10)
-        print (coordinates)
         latitude = coordinates.latitude
         longitude = coordinates.longitude
         sendData = createData(size, latitude,longitude, distance)
@@ -38,17 +51,7 @@ def hello():
     else:
         return 'nothing'
 
-# //variables..................................................
 
-earthR=6371000
-west=math.radians(270)
-north=math.radians(0)
-
-latitude = 45.832119
-longitude = 6.865575
-size = 100
-distance = 50
-increase = 350
 
 # //Definitions.................................
 
@@ -106,12 +109,8 @@ def getElevations(points):
 
         if i == counter:
             locations = locations[:-1]
-            print(len(locations))
             r = requests.get(_url.format(locations,apiKey))
-            print(r.status_code)
-
             results= json.loads(r.content)
-
             for result in results['results']:
                 elevations.append(result['elevation'])
             locations = ''
@@ -120,7 +119,6 @@ def getElevations(points):
             locations = locations[:-1]
             r = requests.get(_url.format(locations,apiKey))
             results= json.loads(r.content)
-            print(r.content)
             for result in results['results']:
                 elevations.append(result['elevation'])
 
