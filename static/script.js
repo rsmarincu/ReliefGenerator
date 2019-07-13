@@ -22,22 +22,25 @@ var light = new THREE.DirectionalLight(0xffffff, 1.1);
 
 light.castShadow = true;
 light.position.set(0.5, 1000, 0.1);
-
-
-var gridHelper = new THREE.GridHelper(100, 10);
-gridHelper.colorGrid = '#000000';
-
-
-scene.add(gridHelper);
 scene.add(light);
 camera.position.set(500, 500, 500);
 
 document.getElementById('location').addEventListener('submit', function(e) {
   e.preventDefault();
+
+  let loader = document.getElementById('loader');
   let location = document.getElementById('textBox').value;
   let gridSize = document.querySelector('input[name="size"]:checked').value;
   let gridDistance = document.querySelector('input[name="distance"]:checked').value;
 
+  loader.style.visibility='visible';
+
+  for (let i = scene.children.length - 1; i >= 0; i--) {
+    if (scene.children[i].type === "Mesh")
+      scene.remove(scene.children[i]);
+  }
+
+  
 
   fetch('/hello', {
       method: 'POST',
@@ -53,11 +56,7 @@ document.getElementById('location').addEventListener('submit', function(e) {
     })
     .then((res) => res.json())
     .then(function(json) {
-      for (let i = scene.children.length - 1; i >= 0; i--) {
-        if (scene.children[i].type === "Mesh")
-          scene.remove(scene.children[i]);
-      }
-
+      
       var vertices = [];
       var holes = [];
       json.coordinate.forEach(function(coord) {
@@ -101,11 +100,14 @@ document.getElementById('location').addEventListener('submit', function(e) {
       camera.position.set(move,json.highest,move);
       mesh.name = 'relief';
       scene.add(mesh);
-
       camera.lookAt(mesh);
       controls.autoRotate = true;
+      loader.style.visibility='hidden';
+
     });
+    
 });
+
 
 function createSphere(lat, long, elev) {
   var geo = new THREE.SphereGeometry(10, 8, 8);

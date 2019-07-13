@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, jsonify
 import math
 import requests
 import numpy as np
-import pandas
 import json
 import utm
 from geopy.geocoders import Nominatim
@@ -44,6 +43,8 @@ def hello():
         size = int(json['size'])
         distance = int(json['distance'])
         coordinates = geolocator.geocode(location,timeout=10)
+        if (coordinates == None):
+            return {}
         latitude = coordinates.latitude
         longitude = coordinates.longitude
         sendData = createData(size, latitude,longitude, distance)
@@ -137,9 +138,20 @@ def createXYgrid(size,dist):
         x+=dist
     return grid
 
+def centreGrid(initialLat, initialLong, size,distance):
+
+    newDistance = (size * distance)/2
+    newWest = getPointWest(initialLat,initialLong,-newDistance)
+    newNorth = getPointNorth(newWest[0],newWest[1],-newDistance)
+
+    return newNorth
+
 
 def createData(size,latitude,longitude,distance):
 
+    centered = centreGrid(latitude,longitude,size,distance)
+    latitude = centered[0]
+    longitude = centered[1] 
     coordinates=createGrid(size,latitude,longitude,distance)
     grid = createXYgrid(size,distance)
     grid = grid.flatten().tolist()
